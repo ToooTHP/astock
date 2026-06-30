@@ -1,74 +1,152 @@
 #!/usr/bin/env python3
-# A股盘后数据抓取 —— 在 GitHub Actions（外网开放）上运行，本地/Claude沙箱跑不了
-# 输出 data/quotes.json，供 Claude 通过 raw.githubusercontent 读取
-# 只抓两类：1) 自选股快照  2) 板块资金流向（找方向：今日 + 5日，行业 + 概念）
-
+# A股数据抓取 —— GitHub Actions 上运行
+# 自选股报价：腾讯(主) + 新浪(兜底)，海外 IP 友好
+# 板块资金流：尽力试东财(可能仍被墙)，失败则优雅留空
 import json, os, traceback
 from datetime import datetime
 from zoneinfo import ZoneInfo
-import akshare as ak
+import requests
 
 BJ = ZoneInfo("Asia/Shanghai")
+UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
 
 
 def load_watchlist(path="watchlist.txt"):
     codes = []
     if os.path.exists(path):
         for line in open(path, encoding="utf-8"):
-            c = line.strip().split("#")[0].strip()      # 去掉 # 注释
+            c = line.strip().split("#")[0].strip()
             if c.isdigit() and len(c) == 6:
                 codes.append(c)
     return codes
 
 
-def safe(fn, *a, **k):
+def to_secid(code):
+    return ("sh" if code[0] in "69" else "sz") + code   # 6/9->沪, 其余->深
+
+
+def num(f, i):
     try:
-        return fn(*a, **k)
+        return float(f[i])
     except Exception:
-        traceback.print_exc()
         return None
 
 
-def main():
-    out = {
-        "updated_at": datetime.now(BJ).strftime("%Y-%m-%d %H:%M:%S %Z"),
-        "watchlist": [],
-        "errors": [],
-    }
+def fetch_tencent(codes):
+    """腾讯行情，字段丰富，海外友好。返回 code->record"""
+    out = {}
+    if not codes:
+        return out
+    url = "https://qt.gtimg.cn/q=" + ",".join(to_secid(c) for c in codes)
+    r = requests.get(url, headers={"User-Agent": UA}, timeout=15)
+    text = r.content.decode("gbk", errors="ignore")
+    for line in text.split(";"):
+        line = line.strip()
+        if not line.startswith("v_") or '="' not in line:
+            continue
+        try:
+            body = line.split('="', 1)[1].rstrip('"')
+            f = body.split("~")
+            code = f[2]
+            price, prev = float(f[3]), float(f[4])
+            out[code] = {
+                "name": f[1], "code": code, "source": "tencent",
+                "price": price, "prev_close": prev, "open": float(f[5]),
+                "high": float(f[33]), "low": float(f[34]),
+                "pct": round((price - prev) / prev * 100, 2) if prev else None,
+                "time": f[30],
+                # 以下字段索引若偶有偏差，可从 raw 重新解析
+                "turnover_pct": num(f, 38), "pe_ttm": num(f, 39),
+                "amount_wan": num(f, 37), "float_cap_yi": num(f, 44),
+                "total_cap_yi": num(f, 45), "vol_ratio": num(f, 49),
+                "raw": body,
+            }
+        except Exception:
+            traceback.print_exc()
+    return out
 
+
+def fetch_sina(codes):
+    """新浪兜底，字段索引稳定"""
+    out = {}
+    if not codes:
+        return out
+    url = "https://hq.sinajs.cn/list=" + ",".join(to_secid(c) for c in codes)
+    r = requests.get(url, headers={"User-Agent": UA,
+                                   "Referer": "https://finance.sina.com.cn"}, timeout=15)
+    text = r.content.decode("gbk", errors="ignore")
+    for line in text.split(";"):
+        line = line.strip()
+        if "hq_str_" not in line or '="' not in line:
+            continue
+        try:
+            head, body = line.split('="', 1)
+            code = head.split("hq_str_")[1][2:]
+            f = body.rstrip('"').split(",")
+            if len(f) < 32:
+                continue
+            price, prev = float(f[3]), float(f[2])
+            out[code] = {
+                "name": f[0], "code": code, "source": "sina",
+                "price": price, "prev_close": prev, "open": float(f[1]),
+                "high": float(f[4]), "low": float(f[5]),
+                "pct": round((price - prev) / prev * 100, 2) if prev else None,
+                "time": f[30] + " " + f[31],
+            }
+        except Exception:
+            traceback.print_exc()
+    return out
+
+
+def fetch_em_sector_flow():
+    """尽力试东财板块资金流(今日, 行业+概念)。被墙就抛异常, 由调用方接住"""
+    res = {}
+    base = "https://push2.eastmoney.com/api/qt/clist/get"
+    headers = {"User-Agent": UA, "Referer": "https://data.eastmoney.com/"}
+    for key, fs in [("industry_today", "m:90+t:2"), ("concept_today", "m:90+t:3")]:
+        params = {"pn": 1, "pz": 15, "po": 1, "np": 1, "fltt": 2, "invt": 2,
+                  "fid": "f62", "fs": fs, "fields": "f12,f14,f3,f62,f184"}
+        r = requests.get(base, params=params, headers=headers, timeout=15)
+        rows = ((r.json() or {}).get("data") or {}).get("diff") or []
+        res[key] = [{"code": x.get("f12"), "name": x.get("f14"),
+                     "pct": x.get("f3"), "main_inflow": x.get("f62"),
+                     "main_pct": x.get("f184")} for x in rows]
+    return res
+
+
+def main():
+    out = {"updated_at": datetime.now(BJ).strftime("%Y-%m-%d %H:%M:%S %Z"),
+           "watchlist": [], "errors": []}
     codes = load_watchlist()
 
-    # 1) 自选股快照（一次性取全A，再按代码过滤）
-    spot = safe(ak.stock_zh_a_spot_em)
-    if spot is None:
-        out["errors"].append("stock_zh_a_spot_em failed")
-    elif codes:
+    # 自选股：腾讯主、新浪补缺
+    quotes = {}
+    try:
+        quotes = fetch_tencent(codes)
+    except Exception as e:
+        out["errors"].append(f"tencent failed: {e}")
+    missing = [c for c in codes if c not in quotes]
+    if missing:
         try:
-            sel = spot[spot["代码"].isin(codes)]
-            out["watchlist"] = json.loads(sel.to_json(orient="records", force_ascii=False))
+            quotes.update(fetch_sina(missing))
         except Exception as e:
-            out["errors"].append(f"watchlist filter: {e}")
+            out["errors"].append(f"sina failed: {e}")
+    out["watchlist"] = [quotes[c] for c in codes if c in quotes]
+    for c in codes:
+        if c not in quotes:
+            out["errors"].append(f"quote missing: {c}")
 
-    # 2) 板块资金流向（找方向）
-    for key, indicator, sector_type in [
-        ("industry_today", "今日", "行业资金流"),
-        ("industry_5d",    "5日",  "行业资金流"),
-        ("concept_today",  "今日", "概念资金流"),
-        ("concept_5d",     "5日",  "概念资金流"),
-    ]:
-        df = safe(ak.stock_sector_fund_flow_rank, indicator=indicator, sector_type=sector_type)
-        if df is None:
-            out["errors"].append(f"{key} failed")
-        else:
-            # 该接口默认按主力净流入排序，取前 15
-            out[key] = json.loads(df.head(15).to_json(orient="records", force_ascii=False))
+    # 板块资金流：尽力试东财
+    try:
+        out.update(fetch_em_sector_flow())
+    except Exception as e:
+        out["errors"].append(f"eastmoney sector flow blocked/failed: {e}")
 
     os.makedirs("data", exist_ok=True)
-    with open("data/quotes.json", "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, indent=2)
-
-    print("OK", out["updated_at"],
-          "| watchlist:", len(out["watchlist"]),
+    with open("data/quotes.json", "w", encoding="utf-8") as fp:
+        json.dump(out, fp, ensure_ascii=False, indent=2)
+    print("OK", out["updated_at"], "| quotes:", len(out["watchlist"]),
           "| errors:", out["errors"])
 
 
