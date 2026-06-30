@@ -20,7 +20,7 @@ jobs:
           python-version: "3.12"
 
       # 每次升级 akshare，源站改版时自我修复
-      - run: pip install -U akshare pandas
+      - run: pip install -U requests
 
       - run: python fetch.py
 
