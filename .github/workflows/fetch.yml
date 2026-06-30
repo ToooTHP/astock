@@ -1,0 +1,33 @@
+name: A-share fetch
+
+on:
+  schedule:
+    # cron 是 UTC 时间。07:35 UTC = 15:35 北京（盘后），周一到周五
+    - cron: "35 7 * * 1-5"
+  workflow_dispatch:        # 仓库 Actions 页里的「Run workflow」手动按钮
+
+permissions:
+  contents: write           # 允许把 json 提交回仓库
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 每次升级 akshare，源站改版时自我修复
+      - run: pip install -U akshare pandas
+
+      - run: python fetch.py
+
+      - name: commit
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          git add data/quotes.json
+          git commit -m "update quotes $(date -u +%FT%TZ)" || echo "no change"
+          git push
