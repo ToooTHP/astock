@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-01 05:32:53 CST",
+  "updated_at": "2026-07-01 07:16:35 CST",
   "indices": [
     {
       "name": "上证指数",
@@ -163,6 +163,7 @@
     }
   ],
   "errors": [
+    "industry_5d failed: Expecting value: line 1 column 1 (char 0)",
     "concept_5d failed: Expecting value: line 1 column 1 (char 0)"
   ],
   "industry_today": [
@@ -377,113 +378,6 @@
       "pct": 1.83,
       "main_inflow": 17682636800.0,
       "main_pct": 2.6
-    }
-  ],
-  "industry_5d": [
-    {
-      "code": "BK1036",
-      "name": "半导体",
-      "pct": 14.98,
-      "main_inflow": 7816675328.0,
-      "main_pct": 0.26
-    },
-    {
-      "code": "BK1038",
-      "name": "光学光电子",
-      "pct": 5.24,
-      "main_inflow": 7150431232.0,
-      "main_pct": 1.03
-    },
-    {
-      "code": "BK1335",
-      "name": "面板",
-      "pct": 4.59,
-      "main_inflow": 7078394368.0,
-      "main_pct": 1.75
-    },
-    {
-      "code": "BK1326",
-      "name": "半导体设备",
-      "pct": 24.95,
-      "main_inflow": 6110897152.0,
-      "main_pct": 1.61
-    },
-    {
-      "code": "BK1331",
-      "name": "数字芯片设计",
-      "pct": 13.95,
-      "main_inflow": 5985627392.0,
-      "main_pct": 0.49
-    },
-    {
-      "code": "BK1339",
-      "name": "被动元件",
-      "pct": 5.14,
-      "main_inflow": 4286800896.0,
-      "main_pct": 1.59
-    },
-    {
-      "code": "BK0735",
-      "name": "计算机设备",
-      "pct": -4.24,
-      "main_inflow": 3733406208.0,
-      "main_pct": 1.35
-    },
-    {
-      "code": "BK1031",
-      "name": "光伏设备",
-      "pct": 0.19,
-      "main_inflow": 3730998016.0,
-      "main_pct": 1.32
-    },
-    {
-      "code": "BK1446",
-      "name": "其他计算机设备",
-      "pct": -4.92,
-      "main_inflow": 3080194816.0,
-      "main_pct": 1.35
-    },
-    {
-      "code": "BK1600",
-      "name": "医疗研发外包",
-      "pct": 8.67,
-      "main_inflow": 2574021808.0,
-      "main_pct": 2.08
-    },
-    {
-      "code": "BK0727",
-      "name": "医疗服务",
-      "pct": 1.19,
-      "main_inflow": 2092151744.0,
-      "main_pct": 1.37
-    },
-    {
-      "code": "BK1317",
-      "name": "光伏加工设备",
-      "pct": 5.12,
-      "main_inflow": 1932796160.0,
-      "main_pct": 2.8
-    },
-    {
-      "code": "BK1386",
-      "name": "军工电子Ⅲ",
-      "pct": 2.83,
-      "main_inflow": 1814842272.0,
-      "main_pct": 0.87
-    },
-    {
-      "code": "BK1233",
-      "name": "军工电子Ⅱ",
-      "pct": 2.83,
-      "main_inflow": 1814842272.0,
-      "main_pct": 0.87
-    },
-    {
-      "code": "BK1301",
-      "name": "游戏Ⅲ",
-      "pct": 0.19,
-      "main_inflow": 1685269504.0,
-      "main_pct": 2.3
     }
   ]
 }
