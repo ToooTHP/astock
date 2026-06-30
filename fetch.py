@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # A股数据抓取 —— GitHub Actions 上运行
-# 自选股报价：腾讯(主) + 新浪(兜底)，海外 IP 友好
-# 板块资金流：尽力试东财(可能仍被墙)，失败则优雅留空
+# 1) 指数风向标 (腾讯, 海外友好)
+# 2) 自选股报价 (腾讯主 + 新浪兜底)
+# 3) 板块资金流 (东财, 今日 + 5日, 行业 + 概念)
 import json, os, traceback
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -10,6 +11,11 @@ import requests
 BJ = ZoneInfo("Asia/Shanghai")
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
+
+INDEX = [("sh000001", "上证指数"), ("sz399001", "深证成指"),
+         ("sz399006", "创业板指"), ("sh000688", "科创50"),
+         ("sh000300", "沪深300"), ("sh000852", "中证1000"),
+         ("bj899050", "北证50")]
 
 
 def load_watchlist(path="watchlist.txt"):
@@ -23,7 +29,7 @@ def load_watchlist(path="watchlist.txt"):
 
 
 def to_secid(code):
-    return ("sh" if code[0] in "69" else "sz") + code   # 6/9->沪, 其余->深
+    return ("sh" if code[0] in "69" else "sz") + code
 
 
 def num(f, i):
@@ -33,14 +39,36 @@ def num(f, i):
         return None
 
 
+def _tencent(secids):
+    url = "https://qt.gtimg.cn/q=" + ",".join(secids)
+    r = requests.get(url, headers={"User-Agent": UA}, timeout=15)
+    return r.content.decode("gbk", errors="ignore")
+
+
+def fetch_indices():
+    out = []
+    text = _tencent([s for s, _ in INDEX])
+    for line in text.split(";"):
+        line = line.strip()
+        if not line.startswith("v_") or '="' not in line:
+            continue
+        try:
+            f = line.split('="', 1)[1].rstrip('"').split("~")
+            price, prev = float(f[3]), float(f[4])
+            out.append({"name": f[1], "code": f[2], "price": price,
+                        "prev_close": prev,
+                        "pct": round((price - prev) / prev * 100, 2) if prev else None,
+                        "high": num(f, 33), "low": num(f, 34)})
+        except Exception:
+            traceback.print_exc()
+    return out
+
+
 def fetch_tencent(codes):
-    """腾讯行情，字段丰富，海外友好。返回 code->record"""
     out = {}
     if not codes:
         return out
-    url = "https://qt.gtimg.cn/q=" + ",".join(to_secid(c) for c in codes)
-    r = requests.get(url, headers={"User-Agent": UA}, timeout=15)
-    text = r.content.decode("gbk", errors="ignore")
+    text = _tencent([to_secid(c) for c in codes])
     for line in text.split(";"):
         line = line.strip()
         if not line.startswith("v_") or '="' not in line:
@@ -56,7 +84,6 @@ def fetch_tencent(codes):
                 "high": float(f[33]), "low": float(f[34]),
                 "pct": round((price - prev) / prev * 100, 2) if prev else None,
                 "time": f[30],
-                # 以下字段索引若偶有偏差，可从 raw 重新解析
                 "turnover_pct": num(f, 38), "pe_ttm": num(f, 39),
                 "amount_wan": num(f, 37), "float_cap_yi": num(f, 44),
                 "total_cap_yi": num(f, 45), "vol_ratio": num(f, 49),
@@ -68,7 +95,6 @@ def fetch_tencent(codes):
 
 
 def fetch_sina(codes):
-    """新浪兜底，字段索引稳定"""
     out = {}
     if not codes:
         return out
@@ -99,55 +125,73 @@ def fetch_sina(codes):
     return out
 
 
-def fetch_em_sector_flow():
-    """尽力试东财板块资金流(今日, 行业+概念)。被墙就抛异常, 由调用方接住"""
-    res = {}
+def _em_flow(fs, fid, fields):
     base = "https://push2.eastmoney.com/api/qt/clist/get"
     headers = {"User-Agent": UA, "Referer": "https://data.eastmoney.com/"}
-    for key, fs in [("industry_today", "m:90+t:2"), ("concept_today", "m:90+t:3")]:
-        params = {"pn": 1, "pz": 15, "po": 1, "np": 1, "fltt": 2, "invt": 2,
-                  "fid": "f62", "fs": fs, "fields": "f12,f14,f3,f62,f184"}
-        r = requests.get(base, params=params, headers=headers, timeout=15)
-        rows = ((r.json() or {}).get("data") or {}).get("diff") or []
-        res[key] = [{"code": x.get("f12"), "name": x.get("f14"),
-                     "pct": x.get("f3"), "main_inflow": x.get("f62"),
-                     "main_pct": x.get("f184")} for x in rows]
-    return res
+    params = {"pn": 1, "pz": 15, "po": 1, "np": 1, "fltt": 2, "invt": 2,
+              "fid": fid, "fs": fs, "fields": fields}
+    r = requests.get(base, params=params, headers=headers, timeout=15)
+    return ((r.json() or {}).get("data") or {}).get("diff") or []
+
+
+def fetch_sector_flow(errors):
+    out = {}
+    # (key, 板块类型 fs, 排序字段 fid, 字段, 涨跌幅键, 净额键, 净占比键)
+    plans = [
+        ("industry_today", "m:90+t:2", "f62",  "f12,f14,f3,f62,f184",   "f3",   "f62",  "f184"),
+        ("concept_today",  "m:90+t:3", "f62",  "f12,f14,f3,f62,f184",   "f3",   "f62",  "f184"),
+        ("industry_5d",    "m:90+t:2", "f164", "f12,f14,f109,f164,f165", "f109", "f164", "f165"),
+        ("concept_5d",     "m:90+t:3", "f164", "f12,f14,f109,f164,f165", "f109", "f164", "f165"),
+    ]
+    for key, fs, fid, fields, kp, ki, kr in plans:
+        try:
+            rows = _em_flow(fs, fid, fields)
+            out[key] = [{"code": x.get("f12"), "name": x.get("f14"),
+                         "pct": x.get(kp), "main_inflow": x.get(ki),
+                         "main_pct": x.get(kr)} for x in rows]
+        except Exception as e:
+            errors.append(f"{key} failed: {e}")
+            traceback.print_exc()
+    return out
 
 
 def main():
     out = {"updated_at": datetime.now(BJ).strftime("%Y-%m-%d %H:%M:%S %Z"),
-           "watchlist": [], "errors": []}
-    codes = load_watchlist()
+           "indices": [], "watchlist": [], "errors": []}
+    errors = out["errors"]
 
-    # 自选股：腾讯主、新浪补缺
+    # 指数风向标
+    try:
+        out["indices"] = fetch_indices()
+    except Exception as e:
+        errors.append(f"indices failed: {e}")
+
+    # 自选股
+    codes = load_watchlist()
     quotes = {}
     try:
         quotes = fetch_tencent(codes)
     except Exception as e:
-        out["errors"].append(f"tencent failed: {e}")
+        errors.append(f"tencent failed: {e}")
     missing = [c for c in codes if c not in quotes]
     if missing:
         try:
             quotes.update(fetch_sina(missing))
         except Exception as e:
-            out["errors"].append(f"sina failed: {e}")
+            errors.append(f"sina failed: {e}")
     out["watchlist"] = [quotes[c] for c in codes if c in quotes]
     for c in codes:
         if c not in quotes:
-            out["errors"].append(f"quote missing: {c}")
+            errors.append(f"quote missing: {c}")
 
-    # 板块资金流：尽力试东财
-    try:
-        out.update(fetch_em_sector_flow())
-    except Exception as e:
-        out["errors"].append(f"eastmoney sector flow blocked/failed: {e}")
+    # 板块资金流 今日 + 5日
+    out.update(fetch_sector_flow(errors))
 
     os.makedirs("data", exist_ok=True)
     with open("data/quotes.json", "w", encoding="utf-8") as fp:
         json.dump(out, fp, ensure_ascii=False, indent=2)
-    print("OK", out["updated_at"], "| quotes:", len(out["watchlist"]),
-          "| errors:", out["errors"])
+    print("OK", out["updated_at"], "| idx:", len(out["indices"]),
+          "| quotes:", len(out["watchlist"]), "| errors:", errors)
 
 
 if __name__ == "__main__":
