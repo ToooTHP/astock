@@ -133,6 +133,7 @@ EM_HOSTS = ["push2", "1.push2", "23.push2", "78.push2",
 def _em_flow(fs, fid, fields, retries=3, backoff=2.0):
     headers = {"User-Agent": UA, "Referer": "https://data.eastmoney.com/"}
     params = {"pn": 1, "pz": 15, "po": 1, "np": 1, "fltt": 2, "invt": 2,
+              "ut": "b2884a393a59ad64002292a3e90d46a5",  # 资金流接口固定解锁令牌,5日排序必需
               "fid": fid, "fs": fs, "fields": fields}
     hosts = random.sample(EM_HOSTS, len(EM_HOSTS))  # 打乱,别每次都先撞同一台
     last_err = None
