@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-01 07:16:35 CST",
+  "updated_at": "2026-07-01 09:00:17 CST",
   "indices": [
     {
       "name": "上证指数",
@@ -163,221 +163,115 @@
     }
   ],
   "errors": [
-    "industry_5d failed: Expecting value: line 1 column 1 (char 0)",
-    "concept_5d failed: Expecting value: line 1 column 1 (char 0)"
+    "concept_today failed: Expecting value: line 1 column 1 (char 0) | status=502 body[:120]='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></center>\\r\\n<hr><center>ngin'",
+    "industry_5d failed: Expecting value: line 1 column 1 (char 0) | status=502 body[:120]='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></center>\\r\\n<hr><center>ngin'",
+    "concept_5d failed: Expecting value: line 1 column 1 (char 0) | status=502 body[:120]='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></center>\\r\\n<hr><center>ngin'"
   ],
   "industry_today": [
     {
-      "code": "BK1201",
-      "name": "电子",
-      "pct": 5.36,
-      "main_inflow": 23319080960.0,
-      "main_pct": 1.95
+      "code": "BK1627",
+      "name": "综合Ⅲ",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK1215",
-      "name": "通信",
-      "pct": 4.12,
-      "main_inflow": 11197388032.0,
-      "main_pct": 4.73
+      "code": "BK1626",
+      "name": "稀土",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK1591",
-      "name": "通信网络设备及器件",
-      "pct": 5.64,
-      "main_inflow": 10365816064.0,
-      "main_pct": 6.97
+      "code": "BK1625",
+      "name": "钨",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK0448",
-      "name": "通信设备",
-      "pct": 4.63,
-      "main_inflow": 10166771968.0,
-      "main_pct": 4.61
+      "code": "BK1624",
+      "name": "其他小金属",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK1038",
-      "name": "光学光电子",
-      "pct": 6.42,
-      "main_inflow": 8216896512.0,
-      "main_pct": 5.44
+      "code": "BK1623",
+      "name": "钼",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK1207",
-      "name": "计算机",
-      "pct": 2.54,
-      "main_inflow": 6859382016.0,
-      "main_pct": 4.56
+      "code": "BK1622",
+      "name": "镍",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK1335",
-      "name": "面板",
-      "pct": 6.27,
-      "main_inflow": 6740024576.0,
-      "main_pct": 7.4
+      "code": "BK1621",
+      "name": "锂",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK0459",
-      "name": "元件",
-      "pct": 4.37,
-      "main_inflow": 6687107072.0,
-      "main_pct": 3.78
+      "code": "BK1620",
+      "name": "钴",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK1340",
-      "name": "印制电路板",
-      "pct": 5.39,
-      "main_inflow": 6119443712.0,
-      "main_pct": 4.65
+      "code": "BK1619",
+      "name": "其他金属新材料",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK1036",
-      "name": "半导体",
-      "pct": 6.31,
-      "main_inflow": 5987078144.0,
-      "main_pct": 0.96
+      "code": "BK1618",
+      "name": "磁性材料",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK1200",
-      "name": "电力设备",
-      "pct": 2.41,
-      "main_inflow": 5345950976.0,
-      "main_pct": 2.15
+      "code": "BK1617",
+      "name": "黄金",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK1037",
-      "name": "消费电子",
-      "pct": 3.98,
-      "main_inflow": 3850758912.0,
-      "main_pct": 3.18
+      "code": "BK1616",
+      "name": "白银",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK1338",
-      "name": "消费电子零部件及组装",
-      "pct": 3.99,
-      "main_inflow": 3702215424.0,
-      "main_pct": 3.14
+      "code": "BK1615",
+      "name": "铜",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK0735",
-      "name": "计算机设备",
-      "pct": 3.05,
-      "main_inflow": 3385099008.0,
-      "main_pct": 5.82
+      "code": "BK1614",
+      "name": "铅锌",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     },
     {
-      "code": "BK1446",
-      "name": "其他计算机设备",
-      "pct": 2.83,
-      "main_inflow": 3068929536.0,
-      "main_pct": 6.33
-    }
-  ],
-  "concept_today": [
-    {
-      "code": "BK0596",
-      "name": "融资融券",
-      "pct": 1.5,
-      "main_inflow": 44158173184.0,
-      "main_pct": 1.49
-    },
-    {
-      "code": "BK0804",
-      "name": "深股通",
-      "pct": 1.76,
-      "main_inflow": 40669896704.0,
-      "main_pct": 2.5
-    },
-    {
-      "code": "BK0568",
-      "name": "深成500",
-      "pct": 1.53,
-      "main_inflow": 36248539136.0,
-      "main_pct": 3.41
-    },
-    {
-      "code": "BK0821",
-      "name": "MSCI中国",
-      "pct": 1.0,
-      "main_inflow": 35445268480.0,
-      "main_pct": 2.25
-    },
-    {
-      "code": "BK1713",
-      "name": "科技风格",
-      "pct": 3.72,
-      "main_inflow": 30106619904.0,
-      "main_pct": 3.49
-    },
-    {
-      "code": "BK0867",
-      "name": "富时罗素",
-      "pct": 0.45,
-      "main_inflow": 29911293952.0,
-      "main_pct": 1.88
-    },
-    {
-      "code": "BK0500",
-      "name": "HS300_",
-      "pct": 0.24,
-      "main_inflow": 27755745280.0,
-      "main_pct": 2.82
-    },
-    {
-      "code": "BK1663",
-      "name": "大盘股",
-      "pct": 0.47,
-      "main_inflow": 27437322240.0,
-      "main_pct": 2.48
-    },
-    {
-      "code": "BK0743",
-      "name": "深证100R",
-      "pct": 1.06,
-      "main_inflow": 25777557504.0,
-      "main_pct": 5.59
-    },
-    {
-      "code": "BK1650",
-      "name": "通信技术",
-      "pct": 4.04,
-      "main_inflow": 21980094464.0,
-      "main_pct": 2.81
-    },
-    {
-      "code": "BK0714",
-      "name": "5G概念",
-      "pct": 3.95,
-      "main_inflow": 21805105152.0,
-      "main_pct": 3.29
-    },
-    {
-      "code": "BK0891",
-      "name": "国产芯片",
-      "pct": 4.83,
-      "main_inflow": 20243599360.0,
-      "main_pct": 2.15
-    },
-    {
-      "code": "BK1134",
-      "name": "算力概念",
-      "pct": 3.35,
-      "main_inflow": 19029524480.0,
-      "main_pct": 5.55
-    },
-    {
-      "code": "BK0854",
-      "name": "华为概念",
-      "pct": 2.93,
-      "main_inflow": 18660847616.0,
-      "main_pct": 2.24
-    },
-    {
-      "code": "BK1677",
-      "name": "2025年报预增",
-      "pct": 1.83,
-      "main_inflow": 17682636800.0,
-      "main_pct": 2.6
+      "code": "BK1613",
+      "name": "铝",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
     }
   ]
 }
