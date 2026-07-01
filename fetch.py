@@ -3,6 +3,7 @@
 # 1) 指数风向标 (腾讯, 海外友好)
 # 2) 自选股报价 (腾讯主 + 新浪兜底)
 # 3) 板块资金流 (东财, 今日 + 5日, 行业 + 概念)
+# 4) 涨跌停家数 (东财涨停池/跌停池, push2ex)
 import json, os, time, random, traceback
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -179,6 +180,42 @@ def fetch_sector_flow(errors):
     return out
 
 
+def _bj_date():
+    return datetime.now(BJ).strftime("%Y%m%d")
+
+
+def fetch_limit_stats(errors):
+    # 涨跌停家数 (东财涨停池/跌停池, push2ex 子域, best-effort)
+    date = _bj_date()
+    headers = {"User-Agent": UA, "Referer": "https://quote.eastmoney.com/"}
+    base = {"ut": "7eea3edcaed734bea9cbfc24409ed989", "dpt": "wz.ztzt",
+            "Pageindex": 0, "pagesize": 1000, "date": date}
+    plans = [("zt_count", "getTopicZTPool", "fbt:asc"),   # 涨停:按首封时间
+             ("dt_count", "getTopicDTPool", "fund:asc")]  # 跌停:按封单资金
+    stats = {"date": date, "zt_count": None, "dt_count": None}
+    for i, (key, path, sort) in enumerate(plans):
+        if i:
+            time.sleep(1.5)
+        params = dict(base, sort=sort)
+        r = None
+        last_err = None
+        for attempt in range(3):
+            if attempt:
+                time.sleep(2.0 * attempt)
+            try:
+                url = f"https://push2ex.eastmoney.com/{path}"
+                r = requests.get(url, params=params, headers=headers, timeout=15)
+                data = (r.json() or {}).get("data")
+                # data 为 null = 非交易日/未开盘,记 None(未知),别记 0
+                stats[key] = None if data is None else len(data.get("pool") or [])
+                break
+            except Exception as e:
+                last_err = f"{e} | status={getattr(r, 'status_code', None)}"
+        else:
+            errors.append(f"{key} failed: {last_err}")
+    return stats
+
+
 def main():
     out = {"updated_at": datetime.now(BJ).strftime("%Y-%m-%d %H:%M:%S %Z"),
            "indices": [], "watchlist": [], "errors": []}
@@ -211,11 +248,20 @@ def main():
     # 板块资金流 今日 + 5日
     out.update(fetch_sector_flow(errors))
 
+    # 涨跌停家数 (best-effort, 独立块, 挂了不影响其它)
+    try:
+        out["limit_stats"] = fetch_limit_stats(errors)
+    except Exception as e:
+        errors.append(f"limit_stats failed: {e}")
+
     os.makedirs("data", exist_ok=True)
     with open("data/quotes.json", "w", encoding="utf-8") as fp:
         json.dump(out, fp, ensure_ascii=False, indent=2)
+    ls = out.get("limit_stats", {})
     print("OK", out["updated_at"], "| idx:", len(out["indices"]),
-          "| quotes:", len(out["watchlist"]), "| errors:", errors)
+          "| quotes:", len(out["watchlist"]),
+          "| ZT/DT:", ls.get("zt_count"), "/", ls.get("dt_count"),
+          "| errors:", errors)
 
 
 if __name__ == "__main__":
