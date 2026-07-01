@@ -3,7 +3,8 @@
 # 1) 指数风向标 (腾讯, 海外友好)
 # 2) 自选股报价 (腾讯主 + 新浪兜底)
 # 3) 板块资金流 (东财, 今日 + 5日, 行业 + 概念)
-# 4) 涨跌停家数 (东财涨停池/跌停池, push2ex)
+# 4) 涨跌停家数 (东财涨停池/跌停池)
+# 5) 板块成分股下钻 (drilldown.txt)
 import json, os, time, random, traceback
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -131,9 +132,9 @@ EM_HOSTS = ["push2", "1.push2", "23.push2", "78.push2",
             "79.push2", "80.push2", "82.push2"]
 
 
-def _em_flow(fs, fid, fields, retries=3, backoff=2.0):
+def _em_flow(fs, fid, fields, pz=15, retries=3, backoff=2.0):
     headers = {"User-Agent": UA, "Referer": "https://data.eastmoney.com/"}
-    params = {"pn": 1, "pz": 15, "po": 1, "np": 1, "fltt": 2, "invt": 2,
+    params = {"pn": 1, "pz": pz, "po": 1, "np": 1, "fltt": 2, "invt": 2,
               "ut": "b2884a393a59ad64002292a3e90d46a5",  # 资金流接口固定解锁令牌,5日排序必需
               "fid": fid, "fs": fs, "fields": fields}
     hosts = random.sample(EM_HOSTS, len(EM_HOSTS))  # 打乱,别每次都先撞同一台
@@ -176,6 +177,45 @@ def fetch_sector_flow(errors):
                          "main_pct": x.get(kr)} for x in rows]
         except Exception as e:
             errors.append(f"{key} failed: {e}")
+            traceback.print_exc()
+    return out
+
+
+def _f(x, div=1.0):
+    try:
+        return round(float(x) / div, 2)
+    except Exception:
+        return None
+
+
+def load_boards(path="drilldown.txt"):
+    codes = []
+    if os.path.exists(path):
+        for line in open(path, encoding="utf-8"):
+            c = line.strip().split("#")[0].strip().upper()
+            if c.startswith("BK") and c[2:].isdigit():
+                codes.append(c)
+    return codes
+
+
+def fetch_drilldown(errors):
+    # 板块成分股下钻: drilldown.txt 里每个 BKxxxx 拉全部成分股 + A/B判定所需字段
+    boards = load_boards()
+    out = {}
+    fields = "f12,f14,f2,f3,f8,f9,f21,f24,f25"  # 代码/名/价/涨幅/换手/PE/流通市值/60日/年初至今
+    for i, bk in enumerate(boards):
+        if i:
+            time.sleep(1.5)
+        try:
+            rows = _em_flow(f"b:{bk}", "f3", fields, pz=400)
+            out[bk] = [{"code": x.get("f12"), "name": x.get("f14"),
+                        "price": _f(x.get("f2")), "pct": _f(x.get("f3")),
+                        "turnover_pct": _f(x.get("f8")), "pe_ttm": _f(x.get("f9")),
+                        "float_cap_yi": _f(x.get("f21"), 1e8),
+                        "chg_60d": _f(x.get("f24")), "chg_ytd": _f(x.get("f25"))}
+                       for x in rows]
+        except Exception as e:
+            errors.append(f"drilldown {bk} failed: {e}")
             traceback.print_exc()
     return out
 
@@ -254,6 +294,14 @@ def main():
     except Exception as e:
         errors.append(f"limit_stats failed: {e}")
 
+    # 板块成分股下钻 (best-effort, 独立块; drilldown.txt 为空则跳过)
+    try:
+        dd = fetch_drilldown(errors)
+        if dd:
+            out["drilldown"] = dd
+    except Exception as e:
+        errors.append(f"drilldown failed: {e}")
+
     os.makedirs("data", exist_ok=True)
     with open("data/quotes.json", "w", encoding="utf-8") as fp:
         json.dump(out, fp, ensure_ascii=False, indent=2)
@@ -261,6 +309,7 @@ def main():
     print("OK", out["updated_at"], "| idx:", len(out["indices"]),
           "| quotes:", len(out["watchlist"]),
           "| ZT/DT:", ls.get("zt_count"), "/", ls.get("dt_count"),
+          "| drilldown:", list(out.get("drilldown", {}).keys()),
           "| errors:", errors)
 
 
