@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-01 09:00:17 CST",
+  "updated_at": "2026-07-01 09:04:54 CST",
   "indices": [
     {
       "name": "上证指数",
@@ -163,9 +163,8 @@
     }
   ],
   "errors": [
-    "concept_today failed: Expecting value: line 1 column 1 (char 0) | status=502 body[:120]='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></center>\\r\\n<hr><center>ngin'",
-    "industry_5d failed: Expecting value: line 1 column 1 (char 0) | status=502 body[:120]='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></center>\\r\\n<hr><center>ngin'",
-    "concept_5d failed: Expecting value: line 1 column 1 (char 0) | status=502 body[:120]='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></center>\\r\\n<hr><center>ngin'"
+    "industry_5d failed: 79.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'",
+    "concept_5d failed: 23.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'"
   ],
   "industry_today": [
     {
@@ -269,6 +268,113 @@
     {
       "code": "BK1613",
       "name": "铝",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    }
+  ],
+  "concept_today": [
+    {
+      "code": "BK1717",
+      "name": "题材股",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1716",
+      "name": "反转股",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1715",
+      "name": "趋势股",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1714",
+      "name": "金融地产风格",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1713",
+      "name": "科技风格",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1712",
+      "name": "医药医疗风格",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1711",
+      "name": "消费风格",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1710",
+      "name": "先进制造风格",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1682",
+      "name": "2026一季报扭亏",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1681",
+      "name": "2026一季报预减",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1680",
+      "name": "2026一季报预增",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1679",
+      "name": "2025年报扭亏",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1678",
+      "name": "2025年报预减",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1677",
+      "name": "2025年报预增",
+      "pct": 0.0,
+      "main_inflow": "-",
+      "main_pct": "-"
+    },
+    {
+      "code": "BK1676",
+      "name": "百日新高",
       "pct": 0.0,
       "main_inflow": "-",
       "main_pct": "-"
