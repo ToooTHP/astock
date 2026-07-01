@@ -133,13 +133,14 @@ def _em_flow(fs, fid, fields, retries=2, backoff=2.0):
     last_err = None
     for attempt in range(retries + 1):
         if attempt:
-            time.sleep(backoff * attempt)  # 递增退避
+            time.sleep(backoff * attempt)  # 递增退避,给东财喘息时间
         r = requests.get(base, params=params, headers=headers, timeout=15)
         try:
             return ((r.json() or {}).get("data") or {}).get("diff") or []
         except Exception as e:
             last_err = f"{e} | status={r.status_code} body[:120]={r.text[:120]!r}"
     raise RuntimeError(last_err)
+
 
 def fetch_sector_flow(errors):
     out = {}
@@ -150,7 +151,9 @@ def fetch_sector_flow(errors):
         ("industry_5d",    "m:90+t:2", "f164", "f12,f14,f109,f164,f165", "f109", "f164", "f165"),
         ("concept_5d",     "m:90+t:3", "f164", "f12,f14,f109,f164,f165", "f109", "f164", "f165"),
     ]
-    for key, fs, fid, fields, kp, ki, kr in plans:
+    for i, (key, fs, fid, fields, kp, ki, kr) in enumerate(plans):
+        if i:
+            time.sleep(1.5)  # 关键改动: 4次请求错开节奏,避免连续触发东财反爬
         try:
             rows = _em_flow(fs, fid, fields)
             out[key] = [{"code": x.get("f12"), "name": x.get("f14"),
@@ -203,9 +206,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-for i, (key, fs, fid, fields, kp, ki, kr) in enumerate(plans):
-        if i:
-            time.sleep(1.5)  # 4次请求错开节奏,避免连续触发反爬
-        try:
-            rows = _em_flow(fs, fid, fields)
