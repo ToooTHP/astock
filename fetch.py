@@ -3,7 +3,7 @@
 # 1) 指数风向标 (腾讯, 海外友好)
 # 2) 自选股报价 (腾讯主 + 新浪兜底)
 # 3) 板块资金流 (东财, 今日 + 5日, 行业 + 概念)
-import json, os, time, traceback
+import json, os, time, random, traceback
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import requests
@@ -125,20 +125,33 @@ def fetch_sina(codes):
     return out
 
 
-def _em_flow(fs, fid, fields, retries=2, backoff=2.0):
-    base = "https://push2.eastmoney.com/api/qt/clist/get"
+# 东财 push2 有一组负载均衡镜像,单个网关 502 时换一台大概率是好的
+EM_HOSTS = ["push2", "1.push2", "23.push2", "78.push2",
+            "79.push2", "80.push2", "82.push2"]
+
+
+def _em_flow(fs, fid, fields, retries=3, backoff=2.0):
     headers = {"User-Agent": UA, "Referer": "https://data.eastmoney.com/"}
     params = {"pn": 1, "pz": 15, "po": 1, "np": 1, "fltt": 2, "invt": 2,
               "fid": fid, "fs": fs, "fields": fields}
+    hosts = random.sample(EM_HOSTS, len(EM_HOSTS))  # 打乱,别每次都先撞同一台
     last_err = None
     for attempt in range(retries + 1):
+        host = hosts[attempt % len(hosts)]              # 每次重试换一台镜像
+        url = f"https://{host}.eastmoney.com/api/qt/clist/get"
         if attempt:
-            time.sleep(backoff * attempt)  # 递增退避,给东财喘息时间
-        r = requests.get(base, params=params, headers=headers, timeout=15)
+            time.sleep(backoff * attempt)               # 递增退避
         try:
+            r = requests.get(url, params=params, headers=headers, timeout=15)
             return ((r.json() or {}).get("data") or {}).get("diff") or []
         except Exception as e:
-            last_err = f"{e} | status={r.status_code} body[:120]={r.text[:120]!r}"
+            code = getattr(getattr(e, "response", None), "status_code", None)
+            try:
+                code = r.status_code
+                body = r.text[:100]
+            except Exception:
+                body = ""
+            last_err = f"{host}: {e} | status={code} body={body!r}"
     raise RuntimeError(last_err)
 
 
@@ -153,7 +166,7 @@ def fetch_sector_flow(errors):
     ]
     for i, (key, fs, fid, fields, kp, ki, kr) in enumerate(plans):
         if i:
-            time.sleep(1.5)  # 关键改动: 4次请求错开节奏,避免连续触发东财反爬
+            time.sleep(1.5)  # 4次请求错开节奏
         try:
             rows = _em_flow(fs, fid, fields)
             out[key] = [{"code": x.get("f12"), "name": x.get("f14"),
