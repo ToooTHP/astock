@@ -3,7 +3,7 @@
 # 1) 指数风向标 (腾讯, 海外友好)
 # 2) 自选股报价 (腾讯主 + 新浪兜底)
 # 3) 板块资金流 (东财, 今日 + 5日, 行业 + 概念)
-import json, os, traceback
+import json, os, time, traceback
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import requests
@@ -125,14 +125,21 @@ def fetch_sina(codes):
     return out
 
 
-def _em_flow(fs, fid, fields):
+def _em_flow(fs, fid, fields, retries=2, backoff=2.0):
     base = "https://push2.eastmoney.com/api/qt/clist/get"
     headers = {"User-Agent": UA, "Referer": "https://data.eastmoney.com/"}
     params = {"pn": 1, "pz": 15, "po": 1, "np": 1, "fltt": 2, "invt": 2,
               "fid": fid, "fs": fs, "fields": fields}
-    r = requests.get(base, params=params, headers=headers, timeout=15)
-    return ((r.json() or {}).get("data") or {}).get("diff") or []
-
+    last_err = None
+    for attempt in range(retries + 1):
+        if attempt:
+            time.sleep(backoff * attempt)  # 递增退避
+        r = requests.get(base, params=params, headers=headers, timeout=15)
+        try:
+            return ((r.json() or {}).get("data") or {}).get("diff") or []
+        except Exception as e:
+            last_err = f"{e} | status={r.status_code} body[:120]={r.text[:120]!r}"
+    raise RuntimeError(last_err)
 
 def fetch_sector_flow(errors):
     out = {}
@@ -196,3 +203,9 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+for i, (key, fs, fid, fields, kp, ki, kr) in enumerate(plans):
+        if i:
+            time.sleep(1.5)  # 4次请求错开节奏,避免连续触发反爬
+        try:
+            rows = _em_flow(fs, fid, fields)
