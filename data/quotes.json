@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-14 00:44:22 CST",
+  "updated_at": "2026-07-14 08:26:16 CST",
   "indices": [
     {
       "name": "上证指数",
@@ -274,12 +274,50 @@
       "total_cap_yi": 210.71,
       "vol_ratio": 1.4,
       "raw": "51~宝鼎科技~002552~54.31~60.34~59.14~246763~120836~125927~0.00~0~0.00~0~0.00~0~0.00~0~0.00~0~54.31~5419~54.32~1163~54.33~1~54.40~9~54.43~12~~20260713161439~-6.03~-9.99~61.88~54.31~54.31/246763/1400704819~246763~140070~6.70~122.28~~61.88~54.31~12.55~200.13~210.71~13.46~66.37~54.31~1.40~-6604~56.76~79.76~169.61~~~2.01~140070.4819~42.3618~78~   A~GP-A~228.95~-7.70~0.37~11.00~3.18~78.98~14.88~-9.66~-7.35~184.94~368503289~387985331~-100.00~215.02~368503289~~~255.90~0.00~~CNY~0~~54.60~-8~"
+    },
+    {
+      "name": "宝信软件",
+      "code": "600845",
+      "source": "tencent",
+      "price": 20.14,
+      "prev_close": 20.0,
+      "open": 20.15,
+      "high": 20.58,
+      "low": 19.52,
+      "pct": 0.7,
+      "time": "20260713161457",
+      "turnover_pct": 1.42,
+      "pe_ttm": 46.36,
+      "amount_wan": 61110.0,
+      "float_cap_yi": 429.8,
+      "total_cap_yi": 575.58,
+      "vol_ratio": 0.89,
+      "raw": "1~宝信软件~600845~20.14~20.00~20.15~303884~145128~158756~20.14~1760~20.13~231~20.12~355~20.11~21~20.10~897~20.15~775~20.16~282~20.17~184~20.18~600~20.19~438~~20260713161457~0.14~0.70~20.58~19.52~20.14/303884/611097821~303884~61110~1.42~46.36~~20.58~19.52~5.30~429.80~575.58~5.44~22.00~18.00~0.89~985~20.11~37.74~44.11~~~1.32~61109.7821~27.7932~138~   A~GP-A~-1.66~10.78~1.15~10.87~5.62~26.45~15.99~22.43~12.33~-10.69~2134054153~2857904137~17.77~-13.67~2134054153~~~-14.73~0.15~~CNY~0~___D__F__N~20.20~-1269~"
+    },
+    {
+      "name": "和而泰",
+      "code": "002402",
+      "source": "tencent",
+      "price": 24.91,
+      "prev_close": 26.32,
+      "open": 25.85,
+      "high": 26.49,
+      "low": 24.73,
+      "pct": -5.36,
+      "time": "20260713161412",
+      "turnover_pct": 9.18,
+      "pe_ttm": 34.64,
+      "amount_wan": 190641.0,
+      "float_cap_yi": 203.88,
+      "total_cap_yi": 230.02,
+      "vol_ratio": 1.52,
+      "raw": "51~和而泰~002402~24.91~26.32~25.85~751747~345721~406025~24.91~428~24.90~270~24.89~266~24.88~77~24.87~302~24.92~141~24.93~46~24.94~62~24.95~85~24.96~28~~20260713161412~-1.41~-5.36~26.49~24.73~24.91/751747/1906405291~751747~190641~9.18~34.64~~26.49~24.73~6.69~203.88~230.02~3.43~28.95~23.69~1.52~981~25.36~33.83~34.67~~~1.81~190640.5291~14.4478~58~   A~GP-A~-36.00~-1.85~0.80~9.63~4.84~60.51~21.46~6.09~4.66~-20.95~818478591~923389485~57.54~-50.58~818478591~~~15.05~0.24~~CNY~0~~24.86~568~"
     }
   ],
   "errors": [
-    "concept_today failed: 82.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=None body=''",
-    "industry_5d failed: 82.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'",
-    "concept_5d failed: 80.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=None body=''"
+    "concept_today failed: 78.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'",
+    "industry_5d failed: 78.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=None body=''",
+    "concept_5d failed: 82.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'"
   ],
   "industry_today": [
     {
