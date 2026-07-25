@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-24 20:08:49 CST",
+  "updated_at": "2026-07-25 14:35:56 CST",
   "indices": [
     {
       "name": "上证指数",
@@ -315,13 +315,225 @@
     }
   ],
   "errors": [
-    "industry_today failed: 79.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=None body=''",
-    "concept_today failed: 82.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=None body=''",
-    "industry_5d failed: 78.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=None body=''",
-    "concept_5d failed: 23.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=None body=''"
+    "industry_5d failed: 23.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=None body=''",
+    "concept_5d failed: 80.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'"
+  ],
+  "industry_today": [
+    {
+      "code": "BK1036",
+      "name": "半导体",
+      "pct": -0.01,
+      "main_inflow": 3305525504.0,
+      "main_pct": 0.95
+    },
+    {
+      "code": "BK1328",
+      "name": "集成电路封测",
+      "pct": 1.87,
+      "main_inflow": 3234836736.0,
+      "main_pct": 6.24
+    },
+    {
+      "code": "BK1326",
+      "name": "半导体设备",
+      "pct": 3.18,
+      "main_inflow": 2346458368.0,
+      "main_pct": 3.64
+    },
+    {
+      "code": "BK1325",
+      "name": "半导体材料",
+      "pct": -0.32,
+      "main_inflow": 730870272.0,
+      "main_pct": 1.69
+    },
+    {
+      "code": "BK1382",
+      "name": "地面兵装Ⅲ",
+      "pct": 2.1,
+      "main_inflow": 382371552.0,
+      "main_pct": 6.13
+    },
+    {
+      "code": "BK1229",
+      "name": "地面兵装Ⅱ",
+      "pct": 2.1,
+      "main_inflow": 382371552.0,
+      "main_pct": 6.13
+    },
+    {
+      "code": "BK1405",
+      "name": "其他专用设备",
+      "pct": -1.82,
+      "main_inflow": 238526576.0,
+      "main_pct": 1.26
+    },
+    {
+      "code": "BK1336",
+      "name": "其他电子Ⅲ",
+      "pct": -1.38,
+      "main_inflow": 234783632.0,
+      "main_pct": 1.69
+    },
+    {
+      "code": "BK1223",
+      "name": "其他电子Ⅱ",
+      "pct": -1.38,
+      "main_inflow": 234783632.0,
+      "main_pct": 1.69
+    },
+    {
+      "code": "BK0910",
+      "name": "专用设备",
+      "pct": -1.92,
+      "main_inflow": 214852704.0,
+      "main_pct": 0.6
+    },
+    {
+      "code": "BK1424",
+      "name": "氟化工",
+      "pct": -1.51,
+      "main_inflow": 211997744.0,
+      "main_pct": 1.68
+    },
+    {
+      "code": "BK1400",
+      "name": "制冷空调设备",
+      "pct": -2.14,
+      "main_inflow": 209892720.0,
+      "main_pct": 4.14
+    },
+    {
+      "code": "BK1235",
+      "name": "环境治理",
+      "pct": -2.28,
+      "main_inflow": 185343264.0,
+      "main_pct": 1.62
+    },
+    {
+      "code": "BK1349",
+      "name": "棉纺",
+      "pct": 0.14,
+      "main_inflow": 168199040.0,
+      "main_pct": 10.68
+    },
+    {
+      "code": "BK1389",
+      "name": "固废治理",
+      "pct": -2.5,
+      "main_inflow": 133005248.0,
+      "main_pct": 2.28
+    }
+  ],
+  "concept_today": [
+    {
+      "code": "BK1180",
+      "name": "华为海思",
+      "pct": -1.96,
+      "main_inflow": 2770505472.0,
+      "main_pct": 3.94
+    },
+    {
+      "code": "BK0935",
+      "name": "中芯概念",
+      "pct": 0.69,
+      "main_inflow": 2624795392.0,
+      "main_pct": 1.73
+    },
+    {
+      "code": "BK1101",
+      "name": "先进封装",
+      "pct": -0.25,
+      "main_inflow": 2022510592.0,
+      "main_pct": 1.62
+    },
+    {
+      "code": "BK1124",
+      "name": "毫米波概念",
+      "pct": -2.18,
+      "main_inflow": 1425972992.0,
+      "main_pct": 2.0
+    },
+    {
+      "code": "BK1152",
+      "name": "高带宽内存",
+      "pct": 0.79,
+      "main_inflow": 1368519168.0,
+      "main_pct": 1.85
+    },
+    {
+      "code": "BK0556",
+      "name": "移动支付",
+      "pct": -2.99,
+      "main_inflow": 1195044608.0,
+      "main_pct": 2.78
+    },
+    {
+      "code": "BK0884",
+      "name": "光刻机(胶)",
+      "pct": -1.12,
+      "main_inflow": 1184063744.0,
+      "main_pct": 1.51
+    },
+    {
+      "code": "BK0952",
+      "name": "第三代半导体",
+      "pct": -1.86,
+      "main_inflow": 1124378112.0,
+      "main_pct": 1.04
+    },
+    {
+      "code": "BK0690",
+      "name": "氟化工概念",
+      "pct": -0.52,
+      "main_inflow": 1043708928.0,
+      "main_pct": 2.06
+    },
+    {
+      "code": "BK0977",
+      "name": "碳化硅",
+      "pct": -1.57,
+      "main_inflow": 1027475456.0,
+      "main_pct": 2.02
+    },
+    {
+      "code": "BK1630",
+      "name": "昨日首板",
+      "pct": -0.18,
+      "main_inflow": 909816832.0,
+      "main_pct": 1.35
+    },
+    {
+      "code": "BK0981",
+      "name": "工业气体",
+      "pct": -0.92,
+      "main_inflow": 806924080.0,
+      "main_pct": 2.65
+    },
+    {
+      "code": "BK1175",
+      "name": "玻璃基板",
+      "pct": -2.0,
+      "main_inflow": 753525504.0,
+      "main_pct": 1.01
+    },
+    {
+      "code": "BK1675",
+      "name": "历史新高",
+      "pct": 2.96,
+      "main_inflow": 702104800.0,
+      "main_pct": 5.48
+    },
+    {
+      "code": "BK0949",
+      "name": "氦气概念",
+      "pct": 0.1,
+      "main_inflow": 694356448.0,
+      "main_pct": 4.45
+    }
   ],
   "limit_stats": {
-    "date": "20260724",
+    "date": "20260725",
     "zt_count": 40,
     "dt_count": 25
   }
