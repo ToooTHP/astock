@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-02 22:01:45 CST",
+  "updated_at": "2026-10-06 00:18:20 CST",
   "indices": [
     {
       "name": "上证指数",
@@ -315,13 +315,119 @@
     }
   ],
   "errors": [
-    "industry_today failed: 79.push2: HTTPSConnectionPool(host='79.push2.eastmoney.com', port=443): Read timed out. (read timeout=15) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'",
-    "concept_today failed: 1.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'",
-    "industry_5d failed: 1.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=None body=''",
-    "concept_5d failed: 78.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'"
+    "concept_today failed: 78.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=None body=''",
+    "industry_5d failed: push2: Expecting value: line 1 column 1 (char 0) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'",
+    "concept_5d failed: 82.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'"
+  ],
+  "industry_today": [
+    {
+      "code": "BK1216",
+      "name": "医药生物",
+      "pct": 2.03,
+      "main_inflow": 6190539776.0,
+      "main_pct": 4.44
+    },
+    {
+      "code": "BK0727",
+      "name": "医疗服务",
+      "pct": 3.09,
+      "main_inflow": 2603071648.0,
+      "main_pct": 6.95
+    },
+    {
+      "code": "BK1600",
+      "name": "医疗研发外包",
+      "pct": 4.22,
+      "main_inflow": 2228100720.0,
+      "main_pct": 7.39
+    },
+    {
+      "code": "BK0465",
+      "name": "化学制药",
+      "pct": 2.1,
+      "main_inflow": 1945034624.0,
+      "main_pct": 4.03
+    },
+    {
+      "code": "BK1015",
+      "name": "能源金属",
+      "pct": 0.19,
+      "main_inflow": 1570977520.0,
+      "main_pct": 11.27
+    },
+    {
+      "code": "BK1622",
+      "name": "镍",
+      "pct": 2.85,
+      "main_inflow": 1565337557.0,
+      "main_pct": 16.12
+    },
+    {
+      "code": "BK0438",
+      "name": "食品饮料",
+      "pct": 1.51,
+      "main_inflow": 1420744880.0,
+      "main_pct": 5.57
+    },
+    {
+      "code": "BK1594",
+      "name": "化学制剂",
+      "pct": 2.25,
+      "main_inflow": 1356723936.0,
+      "main_pct": 3.59
+    },
+    {
+      "code": "BK1044",
+      "name": "生物制品",
+      "pct": 4.53,
+      "main_inflow": 1351955984.0,
+      "main_pct": 5.74
+    },
+    {
+      "code": "BK1211",
+      "name": "汽车",
+      "pct": 0.1,
+      "main_inflow": 1031911680.0,
+      "main_pct": 1.79
+    },
+    {
+      "code": "BK1033",
+      "name": "电池",
+      "pct": 0.94,
+      "main_inflow": 998072832.0,
+      "main_pct": 1.91
+    },
+    {
+      "code": "BK1575",
+      "name": "白酒Ⅲ",
+      "pct": 2.79,
+      "main_inflow": 960362736.0,
+      "main_pct": 8.93
+    },
+    {
+      "code": "BK1277",
+      "name": "白酒Ⅱ",
+      "pct": 2.79,
+      "main_inflow": 960362736.0,
+      "main_pct": 8.93
+    },
+    {
+      "code": "BK1200",
+      "name": "电力设备",
+      "pct": 0.18,
+      "main_inflow": 957833216.0,
+      "main_pct": 0.82
+    },
+    {
+      "code": "BK1596",
+      "name": "其他生物制品",
+      "pct": 4.72,
+      "main_inflow": 908747312.0,
+      "main_pct": 5.46
+    }
   ],
   "limit_stats": {
-    "date": "20261002",
+    "date": "20261006",
     "zt_count": 52,
     "dt_count": 9
   }
