@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-10-06 22:23:43 CST",
+  "updated_at": "2026-10-07 22:39:07 CST",
   "indices": [
     {
       "name": "上证指数",
@@ -315,9 +315,9 @@
     }
   ],
   "errors": [
-    "concept_today failed: 1.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'",
+    "concept_today failed: 23.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'",
     "industry_5d failed: 23.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'",
-    "concept_5d failed: 82.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=None body=''"
+    "concept_5d failed: 79.push2: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response')) | status=502 body='<html>\\r\\n<head><title>502 Bad Gateway</title></head>\\r\\n<body>\\r\\n<center><h1>502 Bad Gateway</h1></cente'"
   ],
   "industry_today": [
     {
@@ -427,7 +427,7 @@
     }
   ],
   "limit_stats": {
-    "date": "20261006",
+    "date": "20261007",
     "zt_count": 52,
     "dt_count": 9
   }
